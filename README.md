@@ -6,6 +6,8 @@ Declare your [Uptime Kuma](https://github.com/louislam/uptime-kuma) monitors in 
 
 Uptime Kuma has no REST API for its configuration: API keys only unlock `/metrics`. This tool talks to the same Socket.IO API the web UI uses, with a regular login. Tested against Uptime Kuma 2.5.
 
+The story behind it: [Uptime Kuma has no API: how I scripted all our monitors anyway](https://nathan.xdo.app/uptime-kuma-api-script-monitors/) ([en français](https://nathan.xdo.app/fr/uptime-kuma-api-scripter-les-sondes/)).
+
 ## Why
 
 Adding monitors by hand is fine for ten of them. With 70+ across production and staging, it is slow, error-prone, and if the instance loses its database you start over. Here the file is the source of truth: a new server is one `apply` away.
