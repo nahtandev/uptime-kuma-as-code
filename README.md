@@ -34,6 +34,10 @@ npm run chaos -- reset
 
 Production alerts go to one Discord channel and mention your team, staging alerts go to another, quietly.
 
+![Down and recovery alerts in Discord](docs/screenshots/discord-alerts.png)
+
+To get pinged, put Discord user IDs in `DISCORD_MENTION_IDS` (Developer Mode, then right-click a member, Copy User ID). Prefix a role ID with `&` to ping the whole role.
+
 ## Commands
 
 | Command | What it does |
