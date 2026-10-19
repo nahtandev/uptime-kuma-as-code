@@ -1,0 +1,28 @@
+{
+  "name": "uptime-kuma-as-code",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Declare your Uptime Kuma monitors in a JSON file and apply them through the Socket.IO API",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "setup": "node --env-file=.env src/cli.ts setup",
+    "healthcheck": "node --env-file=.env src/cli.ts healthcheck",
+    "plan": "node --env-file=.env src/cli.ts plan",
+    "apply": "node --env-file=.env src/cli.ts apply",
+    "prune": "node --env-file=.env src/cli.ts apply --prune",
+    "status": "node --env-file=.env src/cli.ts status",
+    "chaos": "node simulator/chaos.ts",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "typescript": "^5.9.0"
+  }
+}

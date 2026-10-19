@@ -1,0 +1,659 @@
+{
+  "defaults": {
+    "type": "http",
+    "method": "GET",
+    "interval": 30,
+    "retryInterval": 20,
+    "maxretries": 1,
+    "timeout": 24,
+    "resendInterval": 0,
+    "accepted_statuscodes": [
+      "200-299"
+    ],
+    "maxredirects": 10,
+    "ignoreTls": false,
+    "upsideDown": false,
+    "expiryNotification": true,
+    "saveErrorResponse": true,
+    "responseMaxLength": 1024,
+    "active": true
+  },
+  "environments": {
+    "production": {
+      "notification": "discord-prod"
+    },
+    "staging": {
+      "notification": "discord-staging",
+      "overrides": {
+        "interval": 120,
+        "retryInterval": 60,
+        "maxretries": 2,
+        "timeout": 96
+      }
+    },
+    "dev": {
+      "notification": "discord-staging",
+      "overrides": {
+        "interval": 300,
+        "retryInterval": 120,
+        "maxretries": 3,
+        "timeout": 240
+      }
+    }
+  },
+  "notifications": [
+    {
+      "key": "discord-prod",
+      "name": "Discord Production",
+      "type": "discord",
+      "webhookEnv": "DISCORD_WEBHOOK_PROD",
+      "mentionsEnv": "DISCORD_MENTION_IDS"
+    },
+    {
+      "key": "discord-staging",
+      "name": "Discord Staging",
+      "type": "discord",
+      "webhookEnv": "DISCORD_WEBHOOK_STAGING"
+    }
+  ],
+  "groups": [
+    {
+      "name": "Acme Store",
+      "description": "Online store: storefront, checkout and the services behind them.",
+      "monitors": [
+        {
+          "name": "Storefront",
+          "url": "http://simulator:8080/acme-store/production/storefront/",
+          "env": "production",
+          "type": "keyword",
+          "keyword": "\"status\":\"ok\"",
+          "description": "Fails if the page answers 200 without the expected content."
+        },
+        {
+          "name": "Checkout",
+          "url": "http://simulator:8080/acme-store/production/checkout-web/health",
+          "env": "production"
+        },
+        {
+          "name": "Cart API",
+          "url": "http://simulator:8080/acme-store/production/cart-api/healthz",
+          "env": "production"
+        },
+        {
+          "name": "Catalog API",
+          "url": "http://simulator:8080/acme-store/production/catalog-api/healthz",
+          "env": "production"
+        },
+        {
+          "name": "Payments API",
+          "url": "http://simulator:8080/acme-store/production/payments-api/health",
+          "env": "production"
+        },
+        {
+          "name": "Orders API",
+          "url": "http://simulator:8080/acme-store/production/orders-api/health",
+          "env": "production"
+        },
+        {
+          "name": "Inventory API",
+          "url": "http://simulator:8080/acme-store/production/inventory-api/health",
+          "env": "production"
+        },
+        {
+          "name": "Search API",
+          "url": "http://simulator:8080/acme-store/production/search-api/health",
+          "env": "production"
+        },
+        {
+          "name": "Auth Service",
+          "url": "http://simulator:8080/acme-store/production/auth-service/health",
+          "env": "production"
+        },
+        {
+          "name": "Notifications Worker",
+          "url": "http://simulator:8080/acme-store/production/notifications-worker/health",
+          "env": "production"
+        },
+        {
+          "name": "Admin Dashboard",
+          "url": "http://simulator:8080/acme-store/production/admin-dashboard/",
+          "env": "production"
+        },
+        {
+          "name": "Webhooks Gateway",
+          "url": "http://simulator:8080/acme-store/production/webhooks-gateway/status",
+          "env": "production"
+        },
+        {
+          "name": "Assets CDN",
+          "url": "http://simulator:8080/acme-store/production/assets-cdn/ping",
+          "env": "production"
+        }
+      ]
+    },
+    {
+      "name": "Acme Store Staging",
+      "description": "Online store: storefront, checkout and the services behind them. Staging environment.",
+      "monitors": [
+        {
+          "name": "Storefront",
+          "url": "http://simulator:8080/acme-store/staging/storefront/",
+          "env": "staging"
+        },
+        {
+          "name": "Checkout",
+          "url": "http://simulator:8080/acme-store/staging/checkout-web/health",
+          "env": "staging"
+        },
+        {
+          "name": "Cart API",
+          "url": "http://simulator:8080/acme-store/staging/cart-api/healthz",
+          "env": "staging"
+        },
+        {
+          "name": "Catalog API",
+          "url": "http://simulator:8080/acme-store/staging/catalog-api/healthz",
+          "env": "staging"
+        },
+        {
+          "name": "Payments API",
+          "url": "http://simulator:8080/acme-store/staging/payments-api/health",
+          "env": "staging"
+        },
+        {
+          "name": "Orders API",
+          "url": "http://simulator:8080/acme-store/staging/orders-api/health",
+          "env": "staging"
+        },
+        {
+          "name": "Auth Service",
+          "url": "http://simulator:8080/acme-store/staging/auth-service/health",
+          "env": "staging"
+        },
+        {
+          "name": "Admin Dashboard",
+          "url": "http://simulator:8080/acme-store/staging/admin-dashboard/",
+          "env": "staging"
+        }
+      ]
+    },
+    {
+      "name": "Ledgerly",
+      "description": "Invoicing and accounting SaaS.",
+      "monitors": [
+        {
+          "name": "Web App",
+          "url": "http://simulator:8080/ledgerly/production/app-web/",
+          "env": "production"
+        },
+        {
+          "name": "Public API",
+          "url": "http://simulator:8080/ledgerly/production/api/v1/health",
+          "env": "production"
+        },
+        {
+          "name": "Invoicing API",
+          "url": "http://simulator:8080/ledgerly/production/invoicing-api/health",
+          "env": "production"
+        },
+        {
+          "name": "Reporting API",
+          "url": "http://simulator:8080/ledgerly/production/reporting-api/health",
+          "env": "production"
+        },
+        {
+          "name": "Exports Worker",
+          "url": "http://simulator:8080/ledgerly/production/exports-worker/health",
+          "env": "production"
+        },
+        {
+          "name": "Auth",
+          "url": "http://simulator:8080/ledgerly/production/auth/health",
+          "env": "production"
+        },
+        {
+          "name": "Docs",
+          "url": "http://simulator:8080/ledgerly/production/docs/",
+          "env": "production"
+        },
+        {
+          "name": "Marketing Site",
+          "url": "http://simulator:8080/ledgerly/production/website/",
+          "env": "production"
+        },
+        {
+          "name": "Email Service",
+          "url": "http://simulator:8080/ledgerly/production/email-service/health",
+          "env": "production"
+        }
+      ]
+    },
+    {
+      "name": "Ledgerly Staging",
+      "description": "Invoicing and accounting SaaS. Staging environment.",
+      "monitors": [
+        {
+          "name": "Web App",
+          "url": "http://simulator:8080/ledgerly/staging/app-web/",
+          "env": "staging"
+        },
+        {
+          "name": "Public API",
+          "url": "http://simulator:8080/ledgerly/staging/api/v1/health",
+          "env": "staging"
+        },
+        {
+          "name": "Invoicing API",
+          "url": "http://simulator:8080/ledgerly/staging/invoicing-api/health",
+          "env": "staging"
+        },
+        {
+          "name": "Reporting API",
+          "url": "http://simulator:8080/ledgerly/staging/reporting-api/health",
+          "env": "staging"
+        },
+        {
+          "name": "Auth",
+          "url": "http://simulator:8080/ledgerly/staging/auth/health",
+          "env": "staging"
+        },
+        {
+          "name": "Docs",
+          "url": "http://simulator:8080/ledgerly/staging/docs/",
+          "env": "staging"
+        }
+      ]
+    },
+    {
+      "name": "Ledgerly Dev",
+      "description": "Invoicing and accounting SaaS. Dev environment.",
+      "monitors": [
+        {
+          "name": "Web App",
+          "url": "http://simulator:8080/ledgerly/dev/app-web/",
+          "env": "dev"
+        },
+        {
+          "name": "Public API",
+          "url": "http://simulator:8080/ledgerly/dev/api/v1/health",
+          "env": "dev"
+        }
+      ]
+    },
+    {
+      "name": "Fleetwise",
+      "description": "Delivery tracking for logistics companies.",
+      "monitors": [
+        {
+          "name": "Dispatch Web",
+          "url": "http://simulator:8080/fleetwise/production/dispatch-web/",
+          "env": "production"
+        },
+        {
+          "name": "Driver App API",
+          "url": "http://simulator:8080/fleetwise/production/driver-api/health",
+          "env": "production"
+        },
+        {
+          "name": "Tracking API",
+          "url": "http://simulator:8080/fleetwise/production/tracking-api/health",
+          "env": "production"
+        },
+        {
+          "name": "Routing Engine",
+          "url": "http://simulator:8080/fleetwise/production/routing-engine/healthz",
+          "env": "production"
+        },
+        {
+          "name": "Geocoding Proxy",
+          "url": "http://simulator:8080/fleetwise/production/geocoding-proxy/health",
+          "env": "production"
+        },
+        {
+          "name": "Telematics Ingest",
+          "url": "http://simulator:8080/fleetwise/production/telematics-ingest/health",
+          "env": "production"
+        },
+        {
+          "name": "Partner Portal",
+          "url": "http://simulator:8080/fleetwise/production/partner-portal/",
+          "env": "production"
+        },
+        {
+          "name": "Public Website",
+          "url": "http://simulator:8080/fleetwise/production/website/",
+          "env": "production"
+        }
+      ]
+    },
+    {
+      "name": "Fleetwise Staging",
+      "description": "Delivery tracking for logistics companies. Staging environment.",
+      "monitors": [
+        {
+          "name": "Dispatch Web",
+          "url": "http://simulator:8080/fleetwise/staging/dispatch-web/",
+          "env": "staging"
+        },
+        {
+          "name": "Driver App API",
+          "url": "http://simulator:8080/fleetwise/staging/driver-api/health",
+          "env": "staging"
+        },
+        {
+          "name": "Tracking API",
+          "url": "http://simulator:8080/fleetwise/staging/tracking-api/health",
+          "env": "staging"
+        },
+        {
+          "name": "Routing Engine",
+          "url": "http://simulator:8080/fleetwise/staging/routing-engine/healthz",
+          "env": "staging"
+        },
+        {
+          "name": "Partner Portal",
+          "url": "http://simulator:8080/fleetwise/staging/partner-portal/",
+          "env": "staging"
+        }
+      ]
+    },
+    {
+      "name": "Bookly",
+      "description": "Appointment booking for clinics and salons.",
+      "monitors": [
+        {
+          "name": "Booking Widget",
+          "url": "http://simulator:8080/bookly/production/widget/",
+          "env": "production"
+        },
+        {
+          "name": "Booking API",
+          "url": "http://simulator:8080/bookly/production/booking-api/health",
+          "env": "production"
+        },
+        {
+          "name": "Calendar Sync",
+          "url": "http://simulator:8080/bookly/production/calendar-sync/health",
+          "env": "production"
+        },
+        {
+          "name": "SMS Reminders",
+          "url": "http://simulator:8080/bookly/production/sms-reminders/health",
+          "env": "production"
+        },
+        {
+          "name": "Merchant Dashboard",
+          "url": "http://simulator:8080/bookly/production/dashboard/",
+          "env": "production"
+        },
+        {
+          "name": "Payments Bridge",
+          "url": "http://simulator:8080/bookly/production/payments-bridge/health",
+          "env": "production"
+        },
+        {
+          "name": "Website",
+          "url": "http://simulator:8080/bookly/production/website/",
+          "env": "production"
+        }
+      ]
+    },
+    {
+      "name": "Bookly Staging",
+      "description": "Appointment booking for clinics and salons. Staging environment.",
+      "monitors": [
+        {
+          "name": "Booking Widget",
+          "url": "http://simulator:8080/bookly/staging/widget/",
+          "env": "staging"
+        },
+        {
+          "name": "Booking API",
+          "url": "http://simulator:8080/bookly/staging/booking-api/health",
+          "env": "staging"
+        },
+        {
+          "name": "Calendar Sync",
+          "url": "http://simulator:8080/bookly/staging/calendar-sync/health",
+          "env": "staging"
+        },
+        {
+          "name": "Merchant Dashboard",
+          "url": "http://simulator:8080/bookly/staging/dashboard/",
+          "env": "staging"
+        }
+      ]
+    },
+    {
+      "name": "Pulse CRM",
+      "description": "CRM for small sales teams.",
+      "monitors": [
+        {
+          "name": "Web App",
+          "url": "http://simulator:8080/pulse-crm/production/app-web/",
+          "env": "production"
+        },
+        {
+          "name": "Contacts API",
+          "url": "http://simulator:8080/pulse-crm/production/contacts-api/health",
+          "env": "production"
+        },
+        {
+          "name": "Deals API",
+          "url": "http://simulator:8080/pulse-crm/production/deals-api/health",
+          "env": "production"
+        },
+        {
+          "name": "Email Sync",
+          "url": "http://simulator:8080/pulse-crm/production/email-sync/health",
+          "env": "production"
+        },
+        {
+          "name": "Automations Worker",
+          "url": "http://simulator:8080/pulse-crm/production/automations-worker/health",
+          "env": "production"
+        },
+        {
+          "name": "Imports Worker",
+          "url": "http://simulator:8080/pulse-crm/production/imports-worker/health",
+          "env": "production"
+        },
+        {
+          "name": "Public API",
+          "url": "http://simulator:8080/pulse-crm/production/api/v2/health",
+          "env": "production"
+        },
+        {
+          "name": "Help Center",
+          "url": "http://simulator:8080/pulse-crm/production/help/",
+          "env": "production"
+        }
+      ]
+    },
+    {
+      "name": "Pulse CRM Staging",
+      "description": "CRM for small sales teams. Staging environment.",
+      "monitors": [
+        {
+          "name": "Web App",
+          "url": "http://simulator:8080/pulse-crm/staging/app-web/",
+          "env": "staging"
+        },
+        {
+          "name": "Contacts API",
+          "url": "http://simulator:8080/pulse-crm/staging/contacts-api/health",
+          "env": "staging"
+        },
+        {
+          "name": "Deals API",
+          "url": "http://simulator:8080/pulse-crm/staging/deals-api/health",
+          "env": "staging"
+        },
+        {
+          "name": "Public API",
+          "url": "http://simulator:8080/pulse-crm/staging/api/v2/health",
+          "env": "staging"
+        }
+      ]
+    },
+    {
+      "name": "Kiosk",
+      "description": "Self-service ordering terminals for restaurants.",
+      "monitors": [
+        {
+          "name": "Terminal API",
+          "url": "http://simulator:8080/kiosk/production/terminal-api/health",
+          "env": "production"
+        },
+        {
+          "name": "Menu Service",
+          "url": "http://simulator:8080/kiosk/production/menu-service/health",
+          "env": "production"
+        },
+        {
+          "name": "Orders Relay",
+          "url": "http://simulator:8080/kiosk/production/orders-relay/health",
+          "env": "production"
+        },
+        {
+          "name": "Kitchen Display",
+          "url": "http://simulator:8080/kiosk/production/kitchen-display/",
+          "env": "production"
+        },
+        {
+          "name": "Fleet Manager",
+          "url": "http://simulator:8080/kiosk/production/fleet-manager/",
+          "env": "production"
+        },
+        {
+          "name": "OTA Updates",
+          "url": "http://simulator:8080/kiosk/production/ota-updates/health",
+          "env": "production"
+        },
+        {
+          "name": "Printer Bridge",
+          "url": "http://simulator:8080/kiosk/production/printer-bridge/health",
+          "env": "production"
+        },
+        {
+          "name": "Analytics API",
+          "url": "http://simulator:8080/kiosk/production/analytics-api/health",
+          "env": "production"
+        }
+      ]
+    },
+    {
+      "name": "Kiosk Staging",
+      "description": "Self-service ordering terminals for restaurants. Staging environment.",
+      "monitors": [
+        {
+          "name": "Terminal API",
+          "url": "http://simulator:8080/kiosk/staging/terminal-api/health",
+          "env": "staging"
+        },
+        {
+          "name": "Menu Service",
+          "url": "http://simulator:8080/kiosk/staging/menu-service/health",
+          "env": "staging"
+        },
+        {
+          "name": "Orders Relay",
+          "url": "http://simulator:8080/kiosk/staging/orders-relay/health",
+          "env": "staging"
+        },
+        {
+          "name": "Fleet Manager",
+          "url": "http://simulator:8080/kiosk/staging/fleet-manager/",
+          "env": "staging"
+        }
+      ]
+    },
+    {
+      "name": "Kiosk Dev",
+      "description": "Self-service ordering terminals for restaurants. Dev environment.",
+      "monitors": [
+        {
+          "name": "Terminal API",
+          "url": "http://simulator:8080/kiosk/dev/terminal-api/health",
+          "env": "dev"
+        },
+        {
+          "name": "Menu Service",
+          "url": "http://simulator:8080/kiosk/dev/menu-service/health",
+          "env": "dev"
+        }
+      ]
+    },
+    {
+      "name": "Platform",
+      "description": "Shared infrastructure every project depends on.",
+      "monitors": [
+        {
+          "name": "Grafana",
+          "url": "http://simulator:8080/platform/production/grafana/api/health",
+          "env": "production"
+        },
+        {
+          "name": "Prometheus",
+          "url": "http://simulator:8080/platform/production/prometheus/-/healthy",
+          "env": "production"
+        },
+        {
+          "name": "Loki",
+          "url": "http://simulator:8080/platform/production/loki/ready",
+          "env": "production"
+        },
+        {
+          "name": "Object Storage",
+          "url": "http://simulator:8080/platform/production/minio/minio/health/live",
+          "env": "production"
+        },
+        {
+          "name": "Container Registry",
+          "url": "http://simulator:8080/platform/production/registry/v2/",
+          "env": "production"
+        },
+        {
+          "name": "CI Runners",
+          "url": "http://simulator:8080/platform/production/ci/health",
+          "env": "production"
+        },
+        {
+          "name": "SSO Gateway",
+          "url": "http://simulator:8080/platform/production/sso/health",
+          "env": "production"
+        },
+        {
+          "name": "Secrets Vault",
+          "url": "http://simulator:8080/platform/production/vault/v1/sys/health",
+          "env": "production"
+        },
+        {
+          "name": "Status Page",
+          "url": "http://simulator:8080/platform/production/status/",
+          "env": "production"
+        },
+        {
+          "name": "Mail Relay",
+          "url": "http://simulator:8080/platform/production/mail-relay/health",
+          "env": "production"
+        },
+        {
+          "name": "Backups",
+          "url": "http://simulator:8080/platform/production/backups/health",
+          "env": "production"
+        },
+        {
+          "name": "Log Shipper",
+          "url": "http://simulator:8080/platform/production/log-shipper/health",
+          "env": "production"
+        },
+        {
+          "name": "Feature Flags",
+          "url": "http://simulator:8080/platform/production/feature-flags/health",
+          "env": "production"
+        }
+      ]
+    }
+  ]
+}

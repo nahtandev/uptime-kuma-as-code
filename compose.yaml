@@ -1,0 +1,53 @@
+# Local playground: Uptime Kuma on MariaDB, plus a simulator that pretends to
+# be 100+ applications. Nothing here probes a real website.
+#
+#   docker compose up -d
+#   Uptime Kuma: http://localhost:3001     simulator: http://localhost:8080
+
+services:
+  mariadb:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: uptime_kuma
+      MARIADB_USER: uptime_kuma
+      MARIADB_PASSWORD: ${KUMA_DB_PASSWORD:-change-me}
+      MARIADB_RANDOM_ROOT_PASSWORD: "1"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      retries: 20
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:2-slim
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      UPTIME_KUMA_DB_TYPE: mariadb
+      UPTIME_KUMA_DB_HOSTNAME: mariadb
+      UPTIME_KUMA_DB_PORT: "3306"
+      UPTIME_KUMA_DB_NAME: uptime_kuma
+      UPTIME_KUMA_DB_USERNAME: uptime_kuma
+      UPTIME_KUMA_DB_PASSWORD: ${KUMA_DB_PASSWORD:-change-me}
+    ports:
+      - "3001:3001"
+    volumes:
+      - kuma-data:/app/data
+
+  simulator:
+    image: node:22-alpine
+    restart: unless-stopped
+    working_dir: /app
+    command: ["node", "server.ts"]
+    volumes:
+      - ./simulator:/app:ro
+    ports:
+      - "8080:8080"
+
+volumes:
+  mariadb-data:
+  kuma-data:
